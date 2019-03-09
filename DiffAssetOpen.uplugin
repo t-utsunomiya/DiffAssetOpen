@@ -1,0 +1,23 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "Diff Asset Open Plugin",
+	"Description": "This Plugin calls diff asset window.",
+	"Category": "Utility",
+	"CreatedBy": "t_utsunomiya",
+	"CreatedByURL": "",
+	"DocsURL": "https://github.com/t-utsunomiya/UE4DiffAssetRelation",
+	"MarketplaceURL": "",
+	"SupportURL": "https://github.com/t-utsunomiya/UE4DiffAssetRelation/issues",
+	"EngineVersion": "4.20.0",
+	"CanContainContent": false,
+	"Installed": true,
+	"Modules": [
+		{
+			"Name": "DiffAssetOpen",
+			"Type": "Developer",
+			"LoadingPhase": "Default"
+		}
+	]
+}
