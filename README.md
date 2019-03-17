@@ -27,6 +27,9 @@ TortoiseSVN のコミットログウィンドウなどから uassset を開く�
 
 3. Open ボタンを押すと差分ツールを開きます。
 
+DiffAssetOpenRelationTool を使った使用例<br>
+[![](https://img.youtube.com/vi/PoC-79Rl0C0/0.jpg)](https://www.youtube.com/watch?v=PoC-79Rl0C0)
+
 ## 注意
 - 指定したパスのファイルを Temp/Diff フォルダにコピーします。サイズの大きいファイルはコピーに時間がかかる可能性があります。
 サイズの大きなファイル（500MB以上）はコピーする前に確認ダイアログを表示します。
