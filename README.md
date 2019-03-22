@@ -3,7 +3,7 @@ UE4 のアセット差分ツールを開くプラグイン
 TortoiseSVN のコミットログウィンドウなどから uassset を開く事を目的として作成しています。
 
 ## 設定
-1. このリポジトリを UE4 プロジェクトフォルダの /Plugin/Developer フォルダにコピーするかチェックアウトしてください。
+1. このリポジトリを UE4 プロジェクトフォルダの /Plugins/Developer フォルダにコピーするかチェックアウトしてください。
 2. UE4 プロジェクトのプラグイン設定でこのプラグインを有効にしてください。
 
 ## 使い方
@@ -26,6 +26,9 @@ TortoiseSVN のコミットログウィンドウなどから uassset を開く�
 ```
 
 3. Open ボタンを押すと差分ツールを開きます。
+
+DiffAssetOpenRelationTool を使った使用例<br>
+[![](https://img.youtube.com/vi/PoC-79Rl0C0/0.jpg)](https://www.youtube.com/watch?v=PoC-79Rl0C0)
 
 ## 注意
 - 指定したパスのファイルを Temp/Diff フォルダにコピーします。サイズの大きいファイルはコピーに時間がかかる可能性があります。
