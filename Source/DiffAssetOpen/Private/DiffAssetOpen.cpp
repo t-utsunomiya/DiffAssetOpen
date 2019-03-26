@@ -135,6 +135,7 @@ void FDiffAssetOpen::OnDiffAssetOpenMenu()
 		Dialog->SetDialogContent();
 	}
 	DiffAssetOpenDialog.Pin()->BringToFront();
+	DiffAssetOpenDialog.Pin()->SetFocusTopInputForm();
 }
 
 #undef LOCTEXT_NAMESPACE

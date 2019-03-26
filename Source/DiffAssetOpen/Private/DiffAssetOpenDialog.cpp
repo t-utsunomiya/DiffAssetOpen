@@ -47,10 +47,10 @@ void SDiffAssetOpenDialog::SetDialogContent()
 
 	SetContent(
 		SNew(SVerticalBox)
-		ROW("Left Path(L): ", LeftPathTextBox)
-		ROW("Right Path(R): ", RightPathTextBox)
-		ROW("Left Asset Name(E): ", LeftAssetNameTextBox)
-		ROW("Right Asset Name(I): ", RightAssetNameTextBox)
+		ROW("Left Path: ", LeftPathTextBox)
+		ROW("Right Path: ", RightPathTextBox)
+		ROW("Left Asset Name: ", LeftAssetNameTextBox)
+		ROW("Right Asset Name: ", RightAssetNameTextBox)
 		+ SVerticalBox::Slot().HAlign(HAlign_Right).VAlign(VAlign_Bottom).Padding(2.f)
 		[
 			SNew(SButton).Text(LOCTEXT("Open", "Open"))
@@ -61,33 +61,9 @@ void SDiffAssetOpenDialog::SetDialogContent()
 	Resize(FVector2D(700.f, 130.f));
 }
 
-FReply SDiffAssetOpenDialog::OnKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent)
+void SDiffAssetOpenDialog::SetFocusTopInputForm()
 {
-	FReply Reply = SWindow::OnKeyDown(MyGeometry, InKeyEvent);
-	if (InKeyEvent.IsAltDown())
-	{
-		if (InKeyEvent.GetCharacter() == 'L')
-		{
-			SetFocus(LeftPathTextBox.ToSharedRef());
-			Reply = FReply::Handled();
-		}
-		else if (InKeyEvent.GetCharacter() == 'R')
-		{
-			SetFocus(RightPathTextBox.ToSharedRef());
-			Reply = FReply::Handled();
-		}
-		else if (InKeyEvent.GetCharacter() == 'E')
-		{
-			SetFocus(LeftAssetNameTextBox.ToSharedRef());
-			Reply = FReply::Handled();
-		}
-		else if (InKeyEvent.GetCharacter() == 'I')
-		{
-			SetFocus(RightAssetNameTextBox.ToSharedRef());
-			Reply = FReply::Handled();
-		}
-	}
-	return Reply;
+	SetFocus(LeftPathTextBox.ToSharedRef());
 }
 
 bool SDiffAssetOpenDialog::Copy(const TCHAR* DestPath, const TCHAR* SrcPath)

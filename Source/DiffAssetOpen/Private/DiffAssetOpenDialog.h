@@ -13,6 +13,10 @@ public:
 	 * ダイアログの中身を設定する.
 	 */
 	void SetDialogContent();
+	/**
+	 * フォーカスを一番上の入力フォームに合わせます。
+	 */
+	void SetFocusTopInputForm();
 
 private:
 	FReply OnOpenButtonClicked();
@@ -21,7 +25,6 @@ private:
 	void OnChangeLeftAssetName(const FText& NewAssetName);
 	void OnChangeRightAssetName(const FText& NewAssetName);
 	void SetFocus(TSharedRef<SWidget> TargetWidget);
-	FReply OnKeyDown(const FGeometry& Geometory, const FKeyEvent& KeyEvent);
 	bool Copy(const TCHAR* DestPath, const TCHAR* SrcPath);
 	bool CopyToTempDiffFolder(const TCHAR* DestPath, const TCHAR* SrcPath);
 	bool GetPackageName(const FString& FilePath, FString& OutPackageName);
