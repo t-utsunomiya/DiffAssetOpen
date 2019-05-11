@@ -20,6 +20,7 @@ public:
 
 private:
 	FReply OnOpenButtonClicked();
+	FReply OnDeleteTempDirButtonClicked();
 	void OnChangeLeftPath(const FText& NewPath);
 	void OnChangeRightPath(const FText& NewPath);
 	void OnChangeLeftAssetName(const FText& NewAssetName);
@@ -31,6 +32,8 @@ private:
 	void OpenDiffAssetsWindow(FString LeftPath, FString RightPath
 		, FString LeftAssetName, FString RightAssetName) const;
 	FString GetDiffPath(const FString& SrcPath);
+	bool DeleteTempObject();
+	void DeleteTempDir();
 
 private:
 	FText LeftPath;

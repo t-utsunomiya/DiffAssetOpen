@@ -13,6 +13,7 @@
 #include "Widgets/Input/SButton.h"
 #include "Widgets/DeclarativeSyntaxSupport.h"
 #include "Widgets/Text/STextBlock.h"
+#include "ObjectTools.h"
 
 #define LOCTEXT_NAMESPACE "DiffAssetOpenDialog"
 
@@ -56,9 +57,14 @@ void SDiffAssetOpenDialog::SetDialogContent()
 			SNew(SButton).Text(LOCTEXT("Open", "Open"))
 			.OnClicked_Raw(this, &SDiffAssetOpenDialog::OnOpenButtonClicked)
 		]
+		+ SVerticalBox::Slot().HAlign(HAlign_Right).VAlign(VAlign_Bottom).Padding(2.f)
+		[
+			SNew(SButton).Text(LOCTEXT("Delete Temp Dir", "Delete Temp Dir"))
+			.OnClicked_Raw(this, &SDiffAssetOpenDialog::OnDeleteTempDirButtonClicked)
+		]
 	#undef ROW
 	);
-	Resize(FVector2D(700.f, 130.f));
+	Resize(FVector2D(700.f, 140.f));
 }
 
 void SDiffAssetOpenDialog::SetFocusTopInputForm()
@@ -160,6 +166,52 @@ FReply SDiffAssetOpenDialog::OnOpenButtonClicked()
 			}
 		}
 	}
+	return FReply::Handled();
+}
+
+bool SDiffAssetOpenDialog::DeleteTempObject()
+{
+	TArray<UObject*> ObjectsToDelete;
+	for (FObjectIterator It; It; ++It)
+	{
+		if (It->GetPathName().Find("/Temp/Diff/") == 0)
+		{
+			ObjectsToDelete.Add(*It);
+		}
+	}
+	if (ObjectsToDelete.Num())
+	{
+		int32 ResultCount = ObjectTools::DeleteObjects(ObjectsToDelete);
+		if (ResultCount != ObjectsToDelete.Num())
+		{
+			// Delete Dialog で削除をキャンセルすると実際に削除したオブジェクト数が削除しようとした数よりも少なくなる。
+			// これはキャンセルしたときの正常な動作なので警告の出力は不要だと思うが、
+			// キャンセルしたとき以外で正常に削除出来なかった時のために警告を出力している。
+			UE_LOG(LogTemp, Warning, TEXT("Delete object num is min. Expect delete object num: %d Delete object num: %d"), ObjectsToDelete.Num(), ResultCount);
+			return false;
+		}
+	}
+	return true;
+}
+
+void SDiffAssetOpenDialog::DeleteTempDir()
+{
+	IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
+	const FString DirPath = FPaths::DiffDir();
+	bool bDeleteSuccess = PlatformFile.DeleteDirectoryRecursively(*DirPath);
+	if (!bDeleteSuccess)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Dir delete faild. Dir: %s"), *DirPath);
+	}
+}
+
+FReply SDiffAssetOpenDialog::OnDeleteTempDirButtonClicked()
+{
+	if (!DeleteTempObject())
+	{
+		return FReply::Handled();
+	}
+	DeleteTempDir();
 	return FReply::Handled();
 }
 
