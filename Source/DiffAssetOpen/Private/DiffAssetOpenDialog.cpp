@@ -245,8 +245,8 @@ void SDiffAssetOpenDialog::SetFocus(TSharedRef<SWidget> TargetWidget)
 	}
 }
 
-void SDiffAssetOpenDialog::OpenDiffAssetsWindow(FString InLeftPath, FString InRightPath
-	, FString InLeftAssetName, FString InRightAssetName) const
+void SDiffAssetOpenDialog::OpenDiffAssetsWindow(const FString& InLeftPath, const FString& InRightPath
+	, const FString& InLeftAssetName, const FString& InRightAssetName) const
 {
 	FRevisionInfo LeftVersionInfo;
 	LeftVersionInfo.Revision = FString("1");

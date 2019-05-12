@@ -29,8 +29,8 @@ private:
 	bool Copy(const TCHAR* DestPath, const TCHAR* SrcPath);
 	bool CopyToTempDiffFolder(const TCHAR* DestPath, const TCHAR* SrcPath);
 	bool GetPackageName(const FString& FilePath, FString& OutPackageName);
-	void OpenDiffAssetsWindow(FString InLeftPath, FString InRightPath
-		, FString InLeftAssetName, FString InRightAssetName) const;
+	void OpenDiffAssetsWindow(const FString& InLeftPath, const FString& InRightPath
+		, const FString& InLeftAssetName, const FString& InRightAssetName) const;
 	FString GetDiffPath(const FString& SrcPath);
 	bool DeleteTempObject();
 	void DeleteTempDir();
