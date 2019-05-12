@@ -104,7 +104,6 @@ bool SDiffAssetOpenDialog::CopyToTempDiffFolder(const TCHAR* DestPath, const TCH
 		const FString MessageString = FString::Printf(
 			TEXT("大きなサイズのファイルを コピーしようとしています。コピーを続けますか？\n")
 			TEXT("コピー元: %s\nコピー先: %s\nサイズ: %d MB"), SrcPath, DestPath, (FileSize / (1024 * 1024)) + ((FileSize % (1024 * 1024))? 1:0));
-		const FString Title = FString(WindowTitle) + "- Size Warning";
 		const FText TitleText = LOCTEXT("DiffAssetOpenDialog - FileSizeWarning", "DiffAssetOpenDialog - FileSizeWarning");
 		if (FMessageDialog::Open(EAppMsgType::YesNo, FText::FromString(MessageString), &TitleText) == EAppReturnType::Yes)
 		{
