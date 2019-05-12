@@ -245,8 +245,8 @@ void SDiffAssetOpenDialog::SetFocus(TSharedRef<SWidget> TargetWidget)
 	}
 }
 
-void SDiffAssetOpenDialog::OpenDiffAssetsWindow(FString LeftPath, FString RightPath
-	, FString LeftAssetName, FString RightAssetName) const
+void SDiffAssetOpenDialog::OpenDiffAssetsWindow(FString InLeftPath, FString InRightPath
+	, FString InLeftAssetName, FString InRightAssetName) const
 {
 	FRevisionInfo LeftVersionInfo;
 	LeftVersionInfo.Revision = FString("1");
@@ -258,11 +258,11 @@ void SDiffAssetOpenDialog::OpenDiffAssetsWindow(FString LeftPath, FString RightP
 	RightVersionInfo.Changelist = 1;
 	RightVersionInfo.Date = FDateTime();
 
-	UPackage* LeftAssetPackage = LoadPackage(NULL, *LeftPath, LOAD_DisableCompileOnLoad);
-	UObject* LeftAsset = FindObject<UObject>(LeftAssetPackage, *LeftAssetName);
+	UPackage* LeftAssetPackage = LoadPackage(NULL, *InLeftPath, LOAD_DisableCompileOnLoad);
+	UObject* LeftAsset = FindObject<UObject>(LeftAssetPackage, *InLeftAssetName);
 
-	UPackage* RightAssetPackage = LoadPackage(NULL, *RightPath, LOAD_DisableCompileOnLoad);
-	UObject* RightAsset = FindObject<UObject>(RightAssetPackage, *RightAssetName);
+	UPackage* RightAssetPackage = LoadPackage(NULL, *InRightPath, LOAD_DisableCompileOnLoad);
+	UObject* RightAsset = FindObject<UObject>(RightAssetPackage, *InRightAssetName);
 
 	FAssetToolsModule& AssetToolsModule = FModuleManager::LoadModuleChecked<FAssetToolsModule>(TEXT("AssetTools"));
 	AssetToolsModule.Get().DiffAssets(LeftAsset, RightAsset, LeftVersionInfo, RightVersionInfo);
