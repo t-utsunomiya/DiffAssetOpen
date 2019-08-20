@@ -173,7 +173,9 @@ bool SDiffAssetOpenDialog::DeleteTempObject()
 	TArray<UObject*> ObjectsToDelete;
 	for (FObjectIterator It; It; ++It)
 	{
-		if (It->GetPathName().Find("/Temp/Diff/") == 0)
+		// GetPathName() に "/Temp/Diff/" が含まれているものを削除しようとするとBPの関数ノードのようなサブオブジェクトなども削除しようとしてしまい、
+		// 不要に削除時間がかかってました。パッケージは GetName() で取得する文字列にも "/Temp/Diff" が含まれるので GetName() で判定しています。
+		if (It->GetName().Find("/Temp/Diff/") == 0)
 		{
 			ObjectsToDelete.Add(*It);
 		}
