@@ -24,6 +24,9 @@ SDiffAssetOpenDialog::SDiffAssetOpenDialog()
 
 void SDiffAssetOpenDialog::SetDialogContent()
 {
+	ArgmentsTextBox = SNew(SEditableTextBox)
+		.HintText(LOCTEXT("ArgmentsTextBoxHint", "Enter Argments: e.g. C:\\LeftPath.uasset,C:\\RightPath.uasset,LeftAssetName,RightAssetName"))
+		.OnTextChanged_Raw(this, &SDiffAssetOpenDialog::OnChangeArgments);
 	LeftPathTextBox = SNew(SEditableTextBox)
 		.HintText(LOCTEXT("LeftPathTextBoxHint", "Enter Path: e.g. C:\\Users\\UserName\\AppData\\Local\\Temp\\NewBlueprint.uasset-rev3.svn000.tmp.uasset"))
 		.OnTextChanged_Raw(this, &SDiffAssetOpenDialog::OnChangeLeftPath);
@@ -52,6 +55,12 @@ void SDiffAssetOpenDialog::SetDialogContent()
 		ROW("Right Path: ", RightPathTextBox)
 		ROW("Left Asset Name: ", LeftAssetNameTextBox)
 		ROW("Right Asset Name: ", RightAssetNameTextBox)
+		+ SVerticalBox::Slot().VAlign(VAlign_Top).Padding(2.f).AutoHeight()[
+			SNew(SHorizontalBox)
+				+ SHorizontalBox::Slot().VAlign(VAlign_Center).HAlign(HAlign_Center).Padding(2.f).FillWidth(1.1f)
+				[SNew(STextBlock).Text(LOCTEXT("ApplyArgmentDescription", "^^^ Apply Argments ^^^"))]
+		]
+		ROW("Argments: ", ArgmentsTextBox)
 		+ SVerticalBox::Slot().HAlign(HAlign_Right).VAlign(VAlign_Bottom).Padding(2.f)
 		[
 			SNew(SButton).Text(LOCTEXT("Open", "Open"))
@@ -64,12 +73,12 @@ void SDiffAssetOpenDialog::SetDialogContent()
 		]
 	#undef ROW
 	);
-	Resize(FVector2D(700.f, 140.f));
+	Resize(FVector2D(700.f, 180.f));
 }
 
 void SDiffAssetOpenDialog::SetFocusTopInputForm()
 {
-	SetFocus(LeftPathTextBox.ToSharedRef());
+	SetFocus(ArgmentsTextBox.ToSharedRef());
 }
 
 bool SDiffAssetOpenDialog::Copy(const TCHAR* DestPath, const TCHAR* SrcPath)
@@ -214,6 +223,37 @@ FReply SDiffAssetOpenDialog::OnDeleteTempDirButtonClicked()
 	}
 	DeleteTempDir();
 	return FReply::Handled();
+}
+
+static void ArgToText(TArray<FString>& Args, int ArgIndex, FText& Text, TSharedPtr<SEditableTextBox>& TextBox)
+{
+	if (Args.Num() > ArgIndex)
+	{
+		Text = FText::FromString(Args[ArgIndex]);
+	}
+	else
+	{
+		Text = FText();
+	}
+
+	if (TextBox.IsValid())
+	{
+		TextBox->SetText(Text);
+	}
+
+}
+
+void SDiffAssetOpenDialog::OnChangeArgments(const FText& NewText)
+{
+	Argments = NewText;
+
+	TArray<FString> Args;
+	NewText.ToString().ParseIntoArray(Args, TEXT(","));
+
+	ArgToText(Args, 0, LeftPath, LeftPathTextBox);
+	ArgToText(Args, 1, RightPath, RightPathTextBox);
+	ArgToText(Args, 2, LeftAssetName, LeftAssetNameTextBox);
+	ArgToText(Args, 3, RightAssetName, RightAssetNameTextBox);
 }
 
 void SDiffAssetOpenDialog::OnChangeLeftPath(const FText& NewPath)

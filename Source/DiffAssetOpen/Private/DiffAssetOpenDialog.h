@@ -21,6 +21,7 @@ public:
 private:
 	FReply OnOpenButtonClicked();
 	FReply OnDeleteTempDirButtonClicked();
+	void OnChangeArgments(const FText& NewPath);
 	void OnChangeLeftPath(const FText& NewPath);
 	void OnChangeRightPath(const FText& NewPath);
 	void OnChangeLeftAssetName(const FText& NewAssetName);
@@ -36,14 +37,16 @@ private:
 	void DeleteTempDir();
 
 private:
+	FText Argments;
 	FText LeftPath;
 	FText RightPath;
 	FText LeftAssetName;
 	FText RightAssetName;
-	TSharedPtr<SWidget> LeftPathTextBox;
-	TSharedPtr<SWidget> RightPathTextBox;
-	TSharedPtr<SWidget> LeftAssetNameTextBox;
-	TSharedPtr<SWidget> RightAssetNameTextBox;
+	TSharedPtr<SEditableTextBox> ArgmentsTextBox;
+	TSharedPtr<SEditableTextBox> LeftPathTextBox;
+	TSharedPtr<SEditableTextBox> RightPathTextBox;
+	TSharedPtr<SEditableTextBox> LeftAssetNameTextBox;
+	TSharedPtr<SEditableTextBox> RightAssetNameTextBox;
 	const TCHAR* WindowTitle;
 };
 
