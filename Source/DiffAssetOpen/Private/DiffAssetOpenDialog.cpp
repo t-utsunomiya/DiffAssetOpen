@@ -24,9 +24,6 @@ SDiffAssetOpenDialog::SDiffAssetOpenDialog()
 
 void SDiffAssetOpenDialog::SetDialogContent()
 {
-	ArgmentsTextBox = SNew(SEditableTextBox)
-		.HintText(LOCTEXT("ArgmentsTextBoxHint", "Enter Argments: e.g. C:\\LeftPath.uasset,C:\\RightPath.uasset,LeftAssetName,RightAssetName"))
-		.OnTextChanged_Raw(this, &SDiffAssetOpenDialog::OnChangeArgments);
 	LeftPathTextBox = SNew(SEditableTextBox)
 		.HintText(LOCTEXT("LeftPathTextBoxHint", "Enter Path: e.g. C:\\Users\\UserName\\AppData\\Local\\Temp\\NewBlueprint.uasset-rev3.svn000.tmp.uasset"))
 		.OnTextChanged_Raw(this, &SDiffAssetOpenDialog::OnChangeLeftPath);
@@ -51,7 +48,6 @@ void SDiffAssetOpenDialog::SetDialogContent()
 
 	SetContent(
 		SNew(SVerticalBox)
-		ROW("Argments: ", ArgmentsTextBox)
 		ROW("Left Path: ", LeftPathTextBox)
 		ROW("Right Path: ", RightPathTextBox)
 		ROW("Left Asset Name: ", LeftAssetNameTextBox)
@@ -218,41 +214,6 @@ FReply SDiffAssetOpenDialog::OnDeleteTempDirButtonClicked()
 	}
 	DeleteTempDir();
 	return FReply::Handled();
-}
-
-static void ArgToText(const FString& Arg, FText& Text, TSharedPtr<SEditableTextBox>& TextBox)
-{
-	Text = FText::FromString(Arg);
-	if (TextBox.IsValid())
-	{
-		TextBox->SetText(Text);
-	}
-
-}
-void SDiffAssetOpenDialog::OnChangeArgments(const FText& NewText)
-{
-	Argments = NewText;
-
-	TArray<FString> Args;
-	NewText.ToString().ParseIntoArray(Args, TEXT(","));
-
-	if (Args.Num() >= 1)
-	{
-		ArgToText(Args[0], LeftPath, LeftPathTextBox);
-	}
-	if (Args.Num() >= 2)
-	{
-		ArgToText(Args[1], RightPath, RightPathTextBox);
-	}
-	if (Args.Num() >= 3)
-	{
-		ArgToText(Args[2], LeftAssetName, LeftAssetNameTextBox);
-	}
-	if (Args.Num() >= 4)
-	{
-		ArgToText(Args[3], RightAssetName, RightAssetNameTextBox);
-	}
-
 }
 
 void SDiffAssetOpenDialog::OnChangeLeftPath(const FText& NewPath)
