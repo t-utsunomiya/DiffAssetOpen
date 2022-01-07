@@ -10,7 +10,7 @@
 	"DocsURL": "https://github.com/t-utsunomiya/DiffAssetOpen",
 	"MarketplaceURL": "",
 	"SupportURL": "https://github.com/t-utsunomiya/DiffAssetOpen/issues",
-	"EngineVersion": "4.22.0",
+	"EngineVersion": "4.27.0",
 	"CanContainContent": false,
 	"Installed": true,
 	"Modules": [
