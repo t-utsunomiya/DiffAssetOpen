@@ -16,7 +16,7 @@
 	"Modules": [
 		{
 			"Name": "DiffAssetOpen",
-			"Type": "Developer",
+			"Type": "Editor",
 			"LoadingPhase": "Default"
 		}
 	]
