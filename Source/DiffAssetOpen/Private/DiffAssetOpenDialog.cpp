@@ -14,6 +14,7 @@
 #include "Widgets/DeclarativeSyntaxSupport.h"
 #include "Widgets/Text/STextBlock.h"
 #include "ObjectTools.h"
+#include "UObject/UObjectIterator.h"
 
 #define LOCTEXT_NAMESPACE "DiffAssetOpenDialog"
 
@@ -189,7 +190,7 @@ FReply SDiffAssetOpenDialog::OnOpenButtonClicked()
 bool SDiffAssetOpenDialog::DeleteTempObject()
 {
 	TArray<UObject*> ObjectsToDelete;
-	for (FObjectIterator It; It; ++It)
+	for (FThreadSafeObjectIterator It; It; ++It)
 	{
 		// GetPathName() に "/Temp/Diff/" が含まれているものを削除しようとするとBPの関数ノードのようなサブオブジェクトなども削除しようとしてしまい、
 		// 不要に削除時間がかかってました。パッケージは GetName() で取得する文字列にも "/Temp/Diff" が含まれるので GetName() で判定しています。
