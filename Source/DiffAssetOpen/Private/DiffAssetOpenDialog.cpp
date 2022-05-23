@@ -39,6 +39,12 @@ void SDiffAssetOpenDialog::SetDialogContent()
 	RightAssetNameTextBox = SNew(SEditableTextBox)
 		.HintText(LOCTEXT("RightAssetNameTextBoxHint", "Enter AssetName: e.g. NewBlueprint"))
 		.OnTextChanged_Raw(this, &SDiffAssetOpenDialog::OnChangeRightAssetName);
+	LeftChangelistTextBox = SNew(SEditableTextBox)
+		.HintText(LOCTEXT("LeftChangelistTextBoxHint", "Enter Changelist(Revision): e.g. 1 (only number)"))
+		.OnTextChanged_Raw(this, &SDiffAssetOpenDialog::OnChangeLeftChangelist);
+	RightChangelistTextBox = SNew(SEditableTextBox)
+		.HintText(LOCTEXT("RightChangelistTextBoxHint", "Enter Changelist(Revision): e.g. 2 (only number)"))
+		.OnTextChanged_Raw(this, &SDiffAssetOpenDialog::OnChangeRightChangelist);
 
 	#define ROW(Description, TextBox) \
 		+ SVerticalBox::Slot().VAlign(VAlign_Top).Padding(2.f).AutoHeight() [ \
@@ -46,7 +52,7 @@ void SDiffAssetOpenDialog::SetDialogContent()
 			+ SHorizontalBox::Slot().VAlign(VAlign_Center).HAlign(HAlign_Left).Padding(2.f).FillWidth(1.1f) \
 			[ SNew(STextBlock).Text(LOCTEXT(Description, Description)) ] \
 			+ SHorizontalBox::Slot().VAlign(VAlign_Center).HAlign(HAlign_Left).Padding(2.f).FillWidth(5.8f) \
-			[ SNew(SCanvas) + SCanvas::Slot().VAlign(VAlign_Center).HAlign(HAlign_Left).Size(FVector2D(580.f, 18.f))[TextBox.ToSharedRef()] ] \
+			[ SNew(SCanvas) + SCanvas::Slot().VAlign(VAlign_Center).HAlign(HAlign_Left).Size(FVector2D(780.f, 18.f))[TextBox.ToSharedRef()] ] \
 		]
 
 	SetContent(
@@ -55,6 +61,8 @@ void SDiffAssetOpenDialog::SetDialogContent()
 		ROW("Right Path: ", RightPathTextBox)
 		ROW("Left Asset Name: ", LeftAssetNameTextBox)
 		ROW("Right Asset Name: ", RightAssetNameTextBox)
+		ROW("Left Changelist(Revision): ", LeftChangelistTextBox)
+		ROW("Right Changelist(Revision): ", RightChangelistTextBox)
 		+ SVerticalBox::Slot().VAlign(VAlign_Top).Padding(2.f).AutoHeight()[
 			SNew(SHorizontalBox)
 				+ SHorizontalBox::Slot().VAlign(VAlign_Center).HAlign(HAlign_Center).Padding(2.f).FillWidth(1.1f)
@@ -73,7 +81,7 @@ void SDiffAssetOpenDialog::SetDialogContent()
 		]
 	#undef ROW
 	);
-	Resize(FVector2D(700.f, 180.f));
+	Resize(FVector2D(940.f, 230.f));
 }
 
 void SDiffAssetOpenDialog::SetFocusTopInputForm()
@@ -170,7 +178,8 @@ FReply SDiffAssetOpenDialog::OnOpenButtonClicked()
 				&& GetPackageName(RightDiffPath, RightPackageName))
 			{
 				OpenDiffAssetsWindow(LeftPackageName, RightPackageName
-					, LeftAssetName.ToString(), RightAssetName.ToString());
+					, LeftAssetName.ToString(), RightAssetName.ToString()
+					, LeftChangelist, RightChangelist);
 			}
 		}
 	}
@@ -243,6 +252,25 @@ static void ArgToText(TArray<FString>& Args, int ArgIndex, FText& Text, TSharedP
 
 }
 
+static void ArgToTextBox(TArray<FString>& Args, int ArgIndex, TSharedPtr<SEditableTextBox>& TextBox)
+{
+	FText Text;
+	if (Args.Num() > ArgIndex)
+	{
+		Text = FText::FromString(Args[ArgIndex]);
+	}
+	else
+	{
+		Text = FText();
+	}
+
+	if (TextBox.IsValid())
+	{
+		TextBox->SetText(Text);
+	}
+
+}
+
 void SDiffAssetOpenDialog::OnChangeArgments(const FText& NewText)
 {
 	Argments = NewText;
@@ -254,6 +282,8 @@ void SDiffAssetOpenDialog::OnChangeArgments(const FText& NewText)
 	ArgToText(Args, 1, RightPath, RightPathTextBox);
 	ArgToText(Args, 2, LeftAssetName, LeftAssetNameTextBox);
 	ArgToText(Args, 3, RightAssetName, RightAssetNameTextBox);
+	ArgToTextBox(Args, 4, LeftChangelistTextBox);
+	ArgToTextBox(Args, 5, RightChangelistTextBox);
 }
 
 void SDiffAssetOpenDialog::OnChangeLeftPath(const FText& NewPath)
@@ -276,6 +306,30 @@ void SDiffAssetOpenDialog::OnChangeRightAssetName(const FText& NewAssetName)
 	RightAssetName = NewAssetName;
 }
 
+void SDiffAssetOpenDialog::OnChangeLeftChangelist(const FText& NewChangelist)
+{
+	if (NewChangelist.IsNumeric())
+	{
+		LeftChangelist = FCString::Atoi(*NewChangelist.ToString());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Left Changelist is not number. Please input number. Changelist: %s"), *NewChangelist.ToString());
+	}
+}
+
+void SDiffAssetOpenDialog::OnChangeRightChangelist(const FText& NewChangelist)
+{
+	if (NewChangelist.IsNumeric())
+	{
+		RightChangelist = FCString::Atoi(*NewChangelist.ToString());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Right Changelist is not number. Please input number. Changelist: %s"), *NewChangelist.ToString());
+	}
+}
+
 void SDiffAssetOpenDialog::SetFocus(TSharedRef<SWidget> TargetWidget)
 {
 	TArray< TSharedRef<SWindow> > DiffAssetSetting;
@@ -288,16 +342,17 @@ void SDiffAssetOpenDialog::SetFocus(TSharedRef<SWidget> TargetWidget)
 }
 
 void SDiffAssetOpenDialog::OpenDiffAssetsWindow(const FString& InLeftPath, const FString& InRightPath
-	, const FString& InLeftAssetName, const FString& InRightAssetName) const
+	, const FString& InLeftAssetName, const FString& InRightAssetName
+	, int32 InLeftChangelist, int32 InRightChangelist) const
 {
 	FRevisionInfo LeftVersionInfo;
-	LeftVersionInfo.Revision = FString("1");
-	LeftVersionInfo.Changelist = 1;
+	LeftVersionInfo.Revision = FString::FromInt(InLeftChangelist);
+	LeftVersionInfo.Changelist = InLeftChangelist;
 	LeftVersionInfo.Date = FDateTime();
 
 	FRevisionInfo RightVersionInfo;
-	RightVersionInfo.Revision = FString("1");
-	RightVersionInfo.Changelist = 1;
+	RightVersionInfo.Revision = FString::FromInt(InRightChangelist);
+	RightVersionInfo.Changelist = InRightChangelist;
 	RightVersionInfo.Date = FDateTime();
 
 	UPackage* LeftAssetPackage = LoadPackage(NULL, *InLeftPath, LOAD_DisableCompileOnLoad);
